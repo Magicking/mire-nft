@@ -11,7 +11,7 @@ function waitFor<T>(p: Promise<{wait: () => Promise<T>}>): Promise<T> {
 
 async function main() {
   try {
-    const log = debugModule('slnft:script');
+    const log = debugModule('mire:script');
     log.enabled = true;
     const {deployer} = await getNamedAccounts();
 

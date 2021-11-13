@@ -8,6 +8,10 @@
 - [x] OpenSea Royalties compatible
 - [ ] Updates
 
+## Known bugs
+
+ - Opensea creator with capabilities to set royalties is set once at creation
+
 ## INSTALL
 
 ```bash
