@@ -1,5 +1,6 @@
 cache/
 artifacts/
+abi/
 
 coverage*
 typechain/

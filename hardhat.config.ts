@@ -3,6 +3,7 @@ import {HardhatUserConfig} from 'hardhat/types';
 import 'hardhat-deploy';
 import '@nomiclabs/hardhat-ethers';
 import 'hardhat-gas-reporter';
+import 'hardhat-abi-exporter';
 import '@typechain/hardhat';
 import 'solidity-coverage';
 import {node_url, accounts} from './utils/network';
@@ -81,6 +82,13 @@ const config: HardhatUserConfig = {
   },
   mocha: {
     timeout: 0,
+  },
+  abiExporter: {
+    path: './abi',
+    clear: true,
+    flat: true,
+    spacing: 2,
+    pretty: true,
   },
 };
 

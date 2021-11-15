@@ -23,8 +23,6 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
         transferOwnership(_msgSender());
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         mTokenId = 0;
-        // DELETE THIS CODE BELLOW BEFORE RLZ or not?
-        //mint(_msgSender());
     }
 
     //override mint to add ipfs link
@@ -32,9 +30,6 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
         require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721: must have admin role to mint");
 
         NFTDescriptor.ConstructTokenURIParams memory _params = params;
-
-        // We cannot just use balanceOf to create the new tokenId because tokens
-        // can be burned (destroyed), so we need a separate counter.
 
         _params.tokenId = mTokenId;
         _metadatas[mTokenId] = _params;

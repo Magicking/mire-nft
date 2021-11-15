@@ -74,6 +74,7 @@
   },
   "dependencies": {
     "@rarible/royalties": "^0.7.2",
-    "base64-sol": "^1.1.0"
+    "base64-sol": "^1.1.0",
+    "hardhat-abi-exporter": "^2.3.1"
   }
 }
