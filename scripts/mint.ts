@@ -21,14 +21,18 @@ async function main() {
     );
 
     const NFTparams = await NFTDescriptorC.TokenURIParamsCtor(
+      'MIRE',
+      'Description - MIRE',
       'ipfs://QmQRX7xuHiuLVt29E2BMtadf5YGVQFRqf98GyShgwi44G9/mire.svg',
       'ipfs://QmUBup7b6eKy5WCSJxx6LM5vQhfpKmjbJVNVDL4QcQxkiF/2CylinderEngine.glb',
       'https://fr.wikipedia.org/wiki/Mire_(t%C3%A9l%C3%A9vision)'
     );
     log('Mint new token');
-    let tx = await MIREContract.mint(deployer, NFTparams);
+    const tx = await MIREContract.mint(deployer, NFTparams);
     await tx.wait();
-    console.log(await MIREContract.balanceOf(deployer));
+    console.log(
+      await MIREContract.tokenURI((await MIREContract.totalSupply()).sub(1))
+    );
   } catch (e) {
     console.log(e);
   }

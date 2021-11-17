@@ -13,19 +13,30 @@ import "./@rarible/royalties/contracts/LibRoyaltiesV2.sol";
 import "./NFTDescriptor.sol";
 
 contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessControlEnumerable {
-    using NFTDescriptor for NFTDescriptor.ConstructTokenURIParams;
+    //using NFTDescriptor for NFTDescriptor.ConstructTokenURIParams;
     mapping(uint256 => NFTDescriptor.ConstructTokenURIParams) _metadatas;
 
     uint256 mTokenId;
+    NFTDescriptor mRender;
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    constructor() ERC721("MIRE", unicode"M†RE") {
+    constructor(
+        string memory name,
+        string memory symbol,
+        NFTDescriptor render
+    ) ERC721(name, symbol) {
         transferOwnership(_msgSender());
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         mTokenId = 0;
+        mRender = render;
     }
 
-    //override mint to add ipfs link
+    function setRender(address render) public {
+        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "Only ADMIN ROLE");
+        // Changer SVG Renderer library (update)
+        mRender = NFTDescriptor(render);
+    }
+
     function mint(address to, NFTDescriptor.ConstructTokenURIParams calldata params) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721: must have admin role to mint");
 
@@ -38,7 +49,7 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        return _metadatas[tokenId].constructTokenURI();
+        return mRender.constructTokenURI(_metadatas[tokenId]);
     }
 
     function setRoyalties(

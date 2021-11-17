@@ -4,32 +4,33 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
 
-library NFTDescriptor {
+contract NFTDescriptor {
     using Strings for uint256;
 
     struct ConstructTokenURIParams {
         uint256 tokenId;
+        string name;
+        string description;
         string imageURL;
         string animationURL;
         string externalURL;
     }
 
     function TokenURIParamsCtor(
+        string calldata name,
+        string calldata description,
         string calldata imageURL,
         string calldata animationURL,
         string calldata externalURL
     ) public pure returns (ConstructTokenURIParams memory params) {
+        params.name = name;
+        params.description = description;
         params.imageURL = imageURL;
         params.animationURL = animationURL;
         params.externalURL = externalURL;
-        return params;
     }
 
     function constructTokenURI(ConstructTokenURIParams memory params) public pure returns (string memory) {
-        string memory name = generateName(params);
-        string memory description = generateDescription(params);
-        //string memory image = Base64.encode(bytes(generateSVGImage(params)));
-
         return
             string(
                 abi.encodePacked(
@@ -37,14 +38,13 @@ library NFTDescriptor {
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
-                                '{"name":"',
-                                name,
-                                '", "description":"',
-                                description,
-                                generateExternalUrl(params),
-                                '", "image":"',
-                                generateImagesLink(params),
-                                '"}'
+                                "{",
+                                generateName(params, false),
+                                generateDescription(params, false),
+                                generateExternalUrl(params, false),
+                                generateImageLink(params, false),
+                                generateAnimationLink(params, true),
+                                "}"
                             )
                         )
                     )
@@ -52,16 +52,49 @@ library NFTDescriptor {
             );
     }
 
-    function generateExternalUrl(ConstructTokenURIParams memory params) internal pure returns (string memory) {
+    function getEof(bool end) internal pure returns (string memory eof) {
+        if (!end) eof = ",";
+    }
+
+    function generateDescription(ConstructTokenURIParams memory params, bool end) private pure returns (string memory) {
+        string memory eof = getEof(end);
+        return string(abi.encodePacked('"description": "', params.description, '"', eof));
+    }
+
+    function generateName(ConstructTokenURIParams memory params, bool end) private pure returns (string memory) {
+        string memory eof = getEof(end);
+        return string(abi.encodePacked('"name": "', params.name, '"', eof));
+    }
+
+    function generateExternalUrl(ConstructTokenURIParams memory params, bool end)
+        internal
+        pure
+        returns (string memory)
+    {
+        string memory eof = getEof(end);
+
         if (bytes(params.externalURL).length > 0)
-            return string(abi.encodePacked('", "external_url": "', params.externalURL));
+            return string(abi.encodePacked('"external_url": "', params.externalURL, '"', eof));
         return "";
     }
 
-    function generateImagesLink(ConstructTokenURIParams memory params) internal pure returns (string memory) {
+    function generateImageLink(ConstructTokenURIParams memory params, bool end) internal pure returns (string memory) {
+        string memory eof = getEof(end);
+
+        if (bytes(params.imageURL).length > 0) return string(abi.encodePacked('"image": "', params.imageURL, '"', eof));
+        return "";
+    }
+
+    function generateAnimationLink(ConstructTokenURIParams memory params, bool end)
+        internal
+        pure
+        returns (string memory)
+    {
+        string memory eof = getEof(end);
+
         if (bytes(params.animationURL).length > 0)
-            return string(abi.encodePacked(params.imageURL, '", "animation_url": "', params.animationURL));
-        return params.imageURL;
+            return string(abi.encodePacked('"animation_url": "', params.animationURL, '"', eof));
+        return "";
     }
 
     function escapeQuotes(string memory symbol) internal pure returns (string memory) {
@@ -84,14 +117,6 @@ library NFTDescriptor {
             return string(escapedBytes);
         }
         return symbol;
-    }
-
-    function generateDescription(ConstructTokenURIParams memory params) private pure returns (string memory) {
-        return string(abi.encodePacked("MIRE SL - Number ", params.tokenId.toString()));
-    }
-
-    function generateName(ConstructTokenURIParams memory params) private pure returns (string memory) {
-        return string(abi.encodePacked("MIRE SL - ", params.tokenId.toString()));
     }
 
     function addressToString(address addr) internal pure returns (string memory) {

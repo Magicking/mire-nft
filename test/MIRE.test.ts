@@ -28,20 +28,34 @@ describe('SLNFT', function () {
     const {contracts, users, MIREBeneficiary} = await setup();
 
     const NFTparams = await contracts.NFTDescriptor.TokenURIParamsCtor(
+      'MIRE',
+      'Description',
       'ipfs://QmQRX7xuHiuLVt29E2BMtadf5YGVQFRqf98GyShgwi44G9/mire.svg',
       'ipfs://QmUBup7b6eKy5WCSJxx6LM5vQhfpKmjbJVNVDL4QcQxkiF/2CylinderEngine.glb',
       'https://fr.wikipedia.org/wiki/Mire_(t%C3%A9l%C3%A9vision)'
     );
     await expect(contracts.MIRE.mint(MIREBeneficiary.address, NFTparams))
-    .to.emit(contracts.MIRE, 'Transfer')
-    .withArgs("0x0000000000000000000000000000000000000000", MIREBeneficiary.address, 0);
-    
-    await expect(contracts.MIRE.mint(MIREBeneficiary.address, NFTparams))
-    .to.emit(contracts.MIRE, 'Transfer')
-    .withArgs("0x0000000000000000000000000000000000000000", MIREBeneficiary.address, 1);
+      .to.emit(contracts.MIRE, 'Transfer')
+      .withArgs(
+        '0x0000000000000000000000000000000000000000',
+        MIREBeneficiary.address,
+        0
+      );
 
     await expect(contracts.MIRE.mint(MIREBeneficiary.address, NFTparams))
-    .to.emit(contracts.MIRE, 'Transfer')
-    .withArgs("0x0000000000000000000000000000000000000000", MIREBeneficiary.address, 2);
+      .to.emit(contracts.MIRE, 'Transfer')
+      .withArgs(
+        '0x0000000000000000000000000000000000000000',
+        MIREBeneficiary.address,
+        1
+      );
+
+    await expect(contracts.MIRE.mint(MIREBeneficiary.address, NFTparams))
+      .to.emit(contracts.MIRE, 'Transfer')
+      .withArgs(
+        '0x0000000000000000000000000000000000000000',
+        MIREBeneficiary.address,
+        2
+      );
   });
 });
