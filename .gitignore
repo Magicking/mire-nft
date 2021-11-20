@@ -19,3 +19,4 @@ yalc.lock
 contractsInfo.json
 deployments/hardhat
 deployments/localhost
+deployments

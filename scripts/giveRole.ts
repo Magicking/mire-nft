@@ -22,7 +22,7 @@ async function main() {
     console.log(role);
     const tx = await MIREContract.grantRole(
       role,
-      '0x75c912da67c6c99bbbded3760874fbfad07a4af5'
+      '0x75C912Da67c6C99BbBDED3760874fBFaD07a4Af5'
     );
     await tx.wait();
     console.log(tx);

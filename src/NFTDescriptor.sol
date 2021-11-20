@@ -58,7 +58,7 @@ contract NFTDescriptor {
 
     function generateDescription(ConstructTokenURIParams memory params, bool end) private pure returns (string memory) {
         string memory eof = getEof(end);
-        return string(abi.encodePacked('"description": "', params.description, '"', eof));
+        return string(abi.encodePacked('"description": "', escapeChars('\n"\\', params.description), '"', eof));
     }
 
     function generateName(ConstructTokenURIParams memory params, bool end) private pure returns (string memory) {
@@ -97,21 +97,29 @@ contract NFTDescriptor {
         return "";
     }
 
-    function escapeQuotes(string memory symbol) internal pure returns (string memory) {
+    function escapeChars(string memory chars, string memory symbol) internal pure returns (string memory) {
         bytes memory symbolBytes = bytes(symbol);
+        bytes memory charsBytes = bytes(chars);
         uint8 quotesCount = 0;
         for (uint8 i = 0; i < symbolBytes.length; i++) {
-            if (symbolBytes[i] == '"') {
-                quotesCount++;
+            for (uint8 j = 0; j < charsBytes.length; j++) {
+                if (symbolBytes[i] == charsBytes[j]) {
+                    quotesCount++;
+                    continue;
+                }
             }
         }
         if (quotesCount > 0) {
             bytes memory escapedBytes = new bytes(symbolBytes.length + (quotesCount));
             uint256 index;
             for (uint8 i = 0; i < symbolBytes.length; i++) {
-                if (symbolBytes[i] == '"') {
-                    escapedBytes[index++] = "\\";
+                for (uint8 j = 0; j < charsBytes.length; j++) {
+                    if (symbolBytes[i] == charsBytes[j]) {
+                        escapedBytes[index++] = "\\";
+                        break;
+                    }
                 }
+                if (symbolBytes[i] == "\n") symbolBytes[i] = "n";
                 escapedBytes[index++] = symbolBytes[i];
             }
             return string(escapedBytes);

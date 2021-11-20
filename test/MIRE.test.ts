@@ -29,7 +29,7 @@ describe('SLNFT', function () {
 
     const NFTparams = await contracts.NFTDescriptor.TokenURIParamsCtor(
       'MIRE',
-      'Description',
+      'Descri\nption',
       'ipfs://QmQRX7xuHiuLVt29E2BMtadf5YGVQFRqf98GyShgwi44G9/mire.svg',
       'ipfs://QmUBup7b6eKy5WCSJxx6LM5vQhfpKmjbJVNVDL4QcQxkiF/2CylinderEngine.glb',
       'https://fr.wikipedia.org/wiki/Mire_(t%C3%A9l%C3%A9vision)'
@@ -57,5 +57,10 @@ describe('SLNFT', function () {
         MIREBeneficiary.address,
         2
       );
+    const dataURI = (await contracts.MIRE.tokenURI(0)).substring(
+      'data:application/json;base64,'.length
+    );
+    const metadata = Buffer.from(dataURI, 'base64').toString();
+    console.log(metadata);
   });
 });

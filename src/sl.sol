@@ -23,9 +23,15 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
     constructor(
         string memory name,
         string memory symbol,
-        NFTDescriptor render
+        NFTDescriptor render,
+        address owner
     ) ERC721(name, symbol) {
-        transferOwnership(_msgSender());
+        if (owner == address(0x0)) {
+            transferOwnership(_msgSender());
+        } else {
+            transferOwnership(owner);
+            _setupRole(DEFAULT_ADMIN_ROLE, owner);
+        }
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         mTokenId = 0;
         mRender = render;

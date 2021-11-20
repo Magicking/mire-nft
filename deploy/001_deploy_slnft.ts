@@ -15,7 +15,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await deploy('MIRE', {
     from: deployer,
     log: true,
-    args: ['MIRE2', 'M†RE', NFTDescriptorLib.address],
+    args: [
+      'ˢ</S.ky-†-L.ight\\>ᶫ',
+      'S†L',
+      NFTDescriptorLib.address,
+      '0x47108CEa6a1a5ca48EC210169808DF65c34E7Ab0',
+    ],
   });
 };
 export default func;

@@ -61,6 +61,10 @@ const config: HardhatUserConfig = {
       url: node_url('kovan'),
       accounts: accounts('kovan'),
     },
+    polygon: {
+      url: node_url('polygon'),
+      accounts: accounts('polygon'),
+    },
     goerli: {
       url: node_url('goerli'),
       accounts: accounts('goerli'),
