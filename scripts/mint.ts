@@ -29,10 +29,7 @@ async function main() {
     );*/
     const NFTparams = await NFTDescriptorC.TokenURIParamsCtor(
       'MIRE †',
-      'Line †\\nLine ††\\nLine †††\\nLine †V\\n'.replace(
-        /(\r\n|\n|\r)/gm,
-        '\\n'
-      ),
+      'Line †\nLine ††\nLine †††\nLine †V\n'.replace(/(\r\n|\n|\r)/gm, '\\n'),
       'ipfs://QmQRX7xuHiuLVt29E2BMtadf5YGVQFRqf98GyShgwi44G9/mire.svg',
       'ipfs://QmUBup7b6eKy5WCSJxx6LM5vQhfpKmjbJVNVDL4QcQxkiF/2CylinderEngine.glb',
       'https://6120.eu'

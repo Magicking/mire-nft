@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-
+// https://github.com/Magicking/mire-nft
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -15,6 +15,7 @@ import "./NFTDescriptor.sol";
 contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessControlEnumerable {
     //using NFTDescriptor for NFTDescriptor.ConstructTokenURIParams;
     mapping(uint256 => NFTDescriptor.ConstructTokenURIParams) _metadatas;
+    mapping(string => bool) public minted;
 
     uint256 mTokenId;
     NFTDescriptor mRender;
@@ -45,11 +46,13 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
 
     function mint(address to, NFTDescriptor.ConstructTokenURIParams calldata params) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721: must have admin role to mint");
+        require(!minted[params.name], "Item already minted");
 
         NFTDescriptor.ConstructTokenURIParams memory _params = params;
 
         _params.tokenId = mTokenId;
         _metadatas[mTokenId] = _params;
+        minted[_params.name] = true;
         _mint(to, mTokenId);
         mTokenId++;
     }

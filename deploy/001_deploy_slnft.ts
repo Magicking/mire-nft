@@ -1,5 +1,6 @@
 import {HardhatRuntimeEnvironment} from 'hardhat/types';
 import {DeployFunction} from 'hardhat-deploy/types';
+import {MIRE} from '../typechain';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const {deployments, getNamedAccounts} = hre;
@@ -11,15 +12,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     from: deployer,
     log: true,
   });
-
   await deploy('MIRE', {
     from: deployer,
     log: true,
     args: [
-      'ˢ</S.ky-†-L.ight\\>ᶫ',
-      'S†L',
+      'MIRE',
+      'MIRE †',
       NFTDescriptorLib.address,
-      '0x47108CEa6a1a5ca48EC210169808DF65c34E7Ab0',
+      '0x6120932248dafbddb7e97279e10f9348b0e0242c',
     ],
   });
 };
