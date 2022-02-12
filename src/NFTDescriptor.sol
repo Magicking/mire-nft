@@ -28,7 +28,6 @@ library NFTDescriptor {
     function constructTokenURI(ConstructTokenURIParams memory params) public pure returns (string memory) {
         string memory name = generateName(params);
         string memory description = generateDescription(params);
-        //string memory image = Base64.encode(bytes(generateSVGImage(params)));
 
         return
             string(
