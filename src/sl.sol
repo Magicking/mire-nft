@@ -14,9 +14,11 @@ import "./NFTDescriptor.sol";
 
 contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessControlEnumerable {
     using NFTDescriptor for NFTDescriptor.ConstructTokenURIParams;
+    using NFTDescriptor for NFTDescriptor.ConstructContractURIParams;
     mapping(uint256 => NFTDescriptor.ConstructTokenURIParams) _metadatas;
 
     uint256 mTokenId;
+    NFTDescriptor.ConstructContractURIParams contractMetadata;
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
     constructor() ERC721("MIRE", unicode"M†RE") {
@@ -25,7 +27,6 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
         mTokenId = 0;
     }
 
-    //override mint to add ipfs link
     function mint(address to, NFTDescriptor.ConstructTokenURIParams calldata params) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721: must have admin role to mint");
 
@@ -38,9 +39,10 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        return _metadatas[tokenId].constructTokenURI();
+        return _metadatas[tokenId].constructTokenURI(name());
     }
 
+    // Rarrible roylaties informations
     function setRoyalties(
         uint256 _tokenId,
         address payable _royaltiesReceipientAddress,
@@ -60,6 +62,11 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
+    // OpenSea contract metadata info
+    function contractURI() public view returns (string memory) {
+        return contractMetadata.constructContractURI(name());
+    }
+    
     function supportsInterface(bytes4 interfaceId)
         public
         view
