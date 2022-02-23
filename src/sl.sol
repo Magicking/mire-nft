@@ -13,9 +13,9 @@ import "./@rarible/royalties/contracts/LibRoyaltiesV2.sol";
 import "./NFTDescriptor.sol";
 
 contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessControlEnumerable {
-    using NFTDescriptor for NFTDescriptor.ConstructTokenURIParams;
+    using NFTDescriptor for NFTDescriptor.ConstructTokenParams;
     using NFTDescriptor for NFTDescriptor.ConstructContractURIParams;
-    mapping(uint256 => NFTDescriptor.ConstructTokenURIParams) _metadatas;
+    mapping(uint256 => NFTDescriptor.ConstructTokenParams) _metadatas;
 
     uint256 mTokenId;
     NFTDescriptor.ConstructContractURIParams contractMetadata;
@@ -27,20 +27,34 @@ contract MIRE is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, AccessCont
         mTokenId = 0;
     }
 
-    function mint(address to, NFTDescriptor.ConstructTokenURIParams calldata params) public {
-        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721: must have admin role to mint");
-
-        NFTDescriptor.ConstructTokenURIParams memory _params = params;
+    function mint(address to, NFTDescriptor.ConstructTokenParams calldata params) public {
+        NFTDescriptor.ConstructTokenParams memory _params = params;
 
         _params.tokenId = mTokenId;
+        _params.value = 70000 - mTokenId;
         _metadatas[mTokenId] = _params;
         _mint(to, mTokenId);
         mTokenId++;
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
+    // CUSTOM RH.v0
+        //ret = call hypebears.tokenURI(_metadatas[tokenId].tokenIdHypebear)
+        // extract URL to set internal URL
+        // set rendered imageURL
+        // set rendered externalURL
+        // set rendered contract description if different than hash(contractMetadata.current)
+        // set rendered tokenId
+    // END CUSTOM RH.v0
         return _metadatas[tokenId].constructTokenURI(name());
     }
+
+    // CUSTOM RH.v0
+    //  function setHypeBearID ID
+    //    // value = value - 1
+    //    // set _metadatas[tokenId]._metadatas[tokenId].tokenIdHypbear = ID
+    // END CUSTOM RH.v0
+
 
     // Rarrible roylaties informations
     function setRoyalties(

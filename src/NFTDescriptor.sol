@@ -7,11 +7,14 @@ import "base64-sol/base64.sol";
 library NFTDescriptor {
     using Strings for uint256;
 
-    struct ConstructTokenURIParams {
+    struct ConstructTokenParams {
         uint256 tokenId;
         string imageURL;
         string animationURL;
         string externalURL;
+        uint256 value;
+        // ---- CUSTOM -----
+        uint256 tokenIdHypebear;
     }
 
     struct ConstructContractURIParams {
@@ -26,7 +29,7 @@ library NFTDescriptor {
         string calldata imageURL,
         string calldata animationURL,
         string calldata externalURL
-    ) public pure returns (ConstructTokenURIParams memory params) {
+    ) public pure returns (ConstructTokenParams memory params) {
         params.imageURL = imageURL;
         params.animationURL = animationURL;
         params.externalURL = externalURL;
@@ -48,7 +51,7 @@ library NFTDescriptor {
         return params;
     }
 
-    function constructTokenURI(ConstructTokenURIParams memory params, string memory name) public pure returns (string memory) {
+    function constructTokenURI(ConstructTokenParams memory params, string memory name) public pure returns (string memory) {
         string memory _name = generateName(params.tokenId, name);
         string memory description = generateDescription(params.tokenId, name);
 
