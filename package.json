@@ -73,6 +73,8 @@
     "fork:test": "node ./_scripts.js fork:test"
   },
   "dependencies": {
+    "@nomiclabs/hardhat-etherscan": "3.0.3",
+    "@openzeppelin/contracts-upgradeable": "^4.5.1",
     "@rarible/royalties": "^0.7.2",
     "base64-sol": "^1.1.0",
     "hardhat-abi-exporter": "^2.3.1"

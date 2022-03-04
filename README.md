@@ -142,3 +142,7 @@ cp ../node*modules/@rarible/royalties/contracts/{LibRoyaltiesV2.sol,LibPart.sol,
 sed -i 's: = address.*: = payable(address(uint160(\_to)));:' src/@rarible/royalties/contracts/impl/AbstractRoyalties.sol
 sed -i 's:>=0.6.2 <:^:' \_.sol
 mv AbstractRoyalties.sol RoyaltiesV2Impl.sol impl
+
+# Fix oz compiler fixe 
+
+sed -e 's#/// @custom:oz-up.*##' -i /home/magicking/source/gocode/src/github.com/Magicking/mire-nft/node_modules/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol

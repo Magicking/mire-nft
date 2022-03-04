@@ -12,17 +12,14 @@ library NFTDescriptor {
         string imageURL;
         string animationURL;
         string externalURL;
-        uint256 value;
-        // ---- CUSTOM -----
-        uint256 tokenIdHypebear;
     }
 
     struct ConstructContractURIParams {
         string imageURL;
         string description;
         string externalURL;
-        uint256 sellerFeeBasisPoints; // OpenSea seller fee in basis point
-        address feeRecipient; // OpenSea seller fees recipient
+        address royaltiesRecipient;
+        uint256 royaltiesFeeBasisPoints; // Royalties fee in basis point
     }
 
     function TokenURIParamsCtor(
@@ -40,14 +37,14 @@ library NFTDescriptor {
         string calldata imageURL,
         string calldata description,
         string calldata externalURL,
-        uint256 sellerFeeBasisPoints,
-        address feeRecipient
+        address _royaltiesRecipient,
+        uint256 _royaltiesFeeBasisPoints
     ) public pure returns (ConstructContractURIParams memory params) {
         params.imageURL = imageURL;
         params.description = description;
         params.externalURL = externalURL;
-        params.sellerFeeBasisPoints = sellerFeeBasisPoints;
-        params.feeRecipient = feeRecipient;
+        params.royaltiesRecipient = _royaltiesRecipient;
+        params.royaltiesFeeBasisPoints = _royaltiesFeeBasisPoints; // Royalties fee in basis point
         return params;
     }
 
@@ -78,6 +75,8 @@ library NFTDescriptor {
     }
 
     function constructContractURI(ConstructContractURIParams memory params, string memory contractName) public pure returns (string memory) {
+        uint256 sfbp = params.royaltiesFeeBasisPoints;
+        address feeRecipient = params.royaltiesRecipient;
 
         return
             string(
@@ -94,9 +93,9 @@ library NFTDescriptor {
                                 '", "image":"',
                                 generateImagesLink(params.imageURL, ""),
                                 '", "seller_fee_basis_points":"',
-                                "4242",
+                                sfbp.toString(),
                                 '", "fee_recipient":"',
-                                addressToString(params.feeRecipient),
+                                addressToString(feeRecipient),
                                 '"}'
                             )
                         )

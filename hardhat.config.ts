@@ -4,6 +4,7 @@ import 'hardhat-deploy';
 import '@nomiclabs/hardhat-ethers';
 import 'hardhat-gas-reporter';
 import 'hardhat-abi-exporter';
+import '@nomiclabs/hardhat-etherscan';
 import '@typechain/hardhat';
 import 'solidity-coverage';
 import {node_url, accounts} from './utils/network';
@@ -15,11 +16,33 @@ if (process.env.HARDHAT_FORK) {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.0',
+        compilers: [
+      {
+        version: '0.8.0',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+          evmVersion: 'istanbul',
+        },
+      },
+      {
+        version: '0.8.1',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+          evmVersion: 'istanbul',
+        },
+      },
+    ],
   },
   namedAccounts: {
     deployer: 0,
     MIREBeneficiary: 1,
+    governance: '0x18900eF2675aCc6D429fC75F2159101209E851ac', // MireTirelire
   },
   networks: {
     hardhat: {
@@ -65,6 +88,10 @@ const config: HardhatUserConfig = {
       url: node_url('goerli'),
       accounts: accounts('goerli'),
     },
+    polygon: {
+      url: node_url('polygon'),
+      accounts: accounts('polygon'),
+    },
   },
   paths: {
     sources: 'src',
@@ -82,6 +109,9 @@ const config: HardhatUserConfig = {
   },
   mocha: {
     timeout: 0,
+  },
+  etherscan: {
+    apiKey: 'ZHN4D4X3CHR87G444GM3FQ31R8FFN12RTM',
   },
   abiExporter: {
     path: './abi',

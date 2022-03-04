@@ -20,15 +20,14 @@ async function main() {
       await ethers.getContract('NFTDescriptor', deployer)
     );
 
-    const NFTparams = await NFTDescriptorC.TokenURIParamsCtor(
-      'ipfs://QmQRX7xuHiuLVt29E2BMtadf5YGVQFRqf98GyShgwi44G9/mire.svg',
-      'ipfs://QmUBup7b6eKy5WCSJxx6LM5vQhfpKmjbJVNVDL4QcQxkiF/2CylinderEngine.glb',
-      'https://fr.wikipedia.org/wiki/Mire_(t%C3%A9l%C3%A9vision)'
-    );
+    //const cloneAddress = '0x7ab77a4ed87a3a2f0dc21fd7b2bf19b97d035c98'; // polygon
+    const cloneAddress = '0xa7b8ca95b0cbbf745ee08981ad9b12e79dd3cddf'; // rinkeby
+    const cloneId = 0;
     log('Mint new token');
-    let tx = await MIREContract.mint(deployer, NFTparams);
+    let tx = await MIREContract.mint(deployer, cloneAddress, cloneId);
     await tx.wait();
     console.log(await MIREContract.balanceOf(deployer));
+    console.log(await MIREContract.tokenURI(0));
   } catch (e) {
     console.log(e);
   }
