@@ -45,11 +45,6 @@ contract MIRE is ERC721EnumerableUpgradeable, RoyaltiesV2Impl, AccessControlEnum
         version = 0;
     }
 
-    function upgrade() public {
-        mTokenId = 0;
-        version = 0;
-    }
-
     function mint(address to, address cloneContract, uint256 cloneId) public onlyRole(DEFAULT_ADMIN_ROLE) {
         cloneMappingValue[mTokenId] = 42 - mTokenId;
 
@@ -65,7 +60,7 @@ contract MIRE is ERC721EnumerableUpgradeable, RoyaltiesV2Impl, AccessControlEnum
 
     function updateClone(uint256 tokenId, address _cloneContract, uint256 cloneId) public {
         // reward for cleaning up space
-        require(ownerOf(tokenId) == _msgSender());
+        require(ownerOf(tokenId) == _msgSender() || hasRole(DEFAULT_ADMIN_ROLE, _msgSender()));
 
         uint256 decayCount = cloneMappingValue[tokenId];
         require(decayCount > 1);

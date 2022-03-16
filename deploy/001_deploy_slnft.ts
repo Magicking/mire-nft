@@ -25,11 +25,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
           init: {
             methodName: 'init',
             args: [],
-          },
+          },/*
           onUpgrade: {
             methodName: 'upgrade', // method to be executed when the proxy is upgraded (not first deployment)
             args: [],
-          },
+          },*/
         },
       },
     }

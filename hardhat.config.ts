@@ -42,7 +42,7 @@ const config: HardhatUserConfig = {
   namedAccounts: {
     deployer: 0,
     MIREBeneficiary: 1,
-    governance: '0x18900eF2675aCc6D429fC75F2159101209E851ac', // MireTirelire
+    governance: 0, // MireTirelire
   },
   networks: {
     hardhat: {
