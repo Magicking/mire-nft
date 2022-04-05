@@ -78,7 +78,7 @@ const config: HardhatUserConfig = {
     },
     rinkeby: {
       url: node_url('rinkeby'),
-      accounts: accounts('rinkeby'),
+      accounts: accounts('rinkeby'), //[/**/]
     },
     kovan: {
       url: node_url('kovan'),

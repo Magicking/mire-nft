@@ -87,12 +87,7 @@ library NFTDescriptor {
         address feeRecipient = params.royaltiesRecipient;
 
         return
-            string(
-                abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(
-                        bytes(
-                            abi.encodePacked(
+            string(abi.encodePacked(
                                 '{"name":"',
                                 contractName,
                                 '", "description":"',
@@ -106,9 +101,6 @@ library NFTDescriptor {
                                 addressToString(feeRecipient),
                                 '"}'
                             )
-                        )
-                    )
-                )
             );
     }
 

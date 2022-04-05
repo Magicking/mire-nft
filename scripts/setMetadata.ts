@@ -15,17 +15,18 @@ async function main() {
     log.enabled = true;
     const {deployer} = await getNamedAccounts();
 
-    const MIREContract = <MIRE>await ethers.getContract('MIRE', deployer);
+    const MIREContract = <MIRE>await ethers.getContract('SLINE', deployer);
 
     log('Set Metadata');
     let tx = await MIREContract.setContractURI({
-      imageURL: 'https://6120.eu/mire/mire.png',
-      externalURL: 'https://6120.eu',
-      description: 'MIRE signal changes over time, tuning signal in progres...',
+      imageURL: 'https://6120.eu/img/skylight.png',
+      externalURL: 'https://sky-light-sl.com',
+      description: 'S.ky L.ight ',
       royaltiesRecipient: deployer,
       royaltiesFeeBasisPoints: 1000,
     });
     await tx.wait();
+    console.log(await MIREContract.contractURI());
   } catch (e) {
     console.log(e);
   }

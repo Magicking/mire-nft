@@ -7,11 +7,11 @@ contract WAIT {
     mapping(bytes4 => bool) internal supportedInterfaces;
 
     function name() public pure returns (string memory) {
-        return "CARRE";
+        return "S-LINE";
     }
 
     function symbol() public pure returns (string memory) {
-        return "ROND";
+        return unicode"†";
     }
 
     function totalSupply() public pure returns (uint256) {

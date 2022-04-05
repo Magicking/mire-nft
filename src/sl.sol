@@ -29,6 +29,8 @@ contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
     mapping(uint256 => uint256) cloneMappingId;
     mapping(uint256 => uint256) cloneMappingValue;
 
+    string private _name;
+    string private _symbol;
     uint256 mTokenId;
     NFTDescriptor.ConstructContractURIParams contractMetadata;
     uint256 public version;
@@ -41,6 +43,26 @@ contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         mTokenId = 0;
         version = 0;
+        _name = name;
+        _symbol = symbol;
+    }
+
+    function name() public view override returns (string memory) {
+        return _name;
+    }
+
+    function symbol() public view override returns (string memory) {
+        return _symbol;
+    }
+
+    function batchMint(
+        address[] memory to,
+        address cloneContract,
+        uint256 cloneId
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+      for (uint i = 0; i < to.length; i++) {
+        mint(to[i], cloneContract, cloneId);
+      }
     }
 
     function mint(
@@ -118,6 +140,19 @@ contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         contractMetadata = params;
+    }
+
+    // Set contract information, royalties and such
+    function setContractsInfo(string memory name, string memory symbol)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        if (bytes(name).length > 0) {
+          _name = name;
+        }
+        if (bytes(symbol).length > 0) {
+          _symbol = symbol;
+        }
     }
 
     function supportsInterface(bytes4 interfaceId)
