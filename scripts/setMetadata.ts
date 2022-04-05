@@ -23,8 +23,8 @@ async function main() {
       externalURL: 'https://6120.eu',
       description: 'MIRE signal changes over time, tuning signal in progres...',
       royaltiesRecipient: deployer,
-      royaltiesFeeBasisPoints: 100}
-    );
+      royaltiesFeeBasisPoints: 1000,
+    });
     await tx.wait();
   } catch (e) {
     console.log(e);

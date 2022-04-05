@@ -8,8 +8,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const {deployer, governance} = await getNamedAccounts();
 
   const NFTDescriptorLib = await ethers.getContract('NFTDescriptor', deployer);
+
   await catchUnknownSigner(
-    deploy('MIRE', {
+    deploy('SLINE', {
+      contract: 'MIRE',
       from: deployer,
       log: true,
       libraries: {
@@ -20,7 +22,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         execute: {
           init: {
             methodName: 'init',
-            args: ['MIRE', 'M†RE'],
+            args: ['S-LINE', 'S†ine'],
           } /*
           onUpgrade: {
             methodName: 'upgrade', // method to be executed when the proxy is upgraded (not first deployment)

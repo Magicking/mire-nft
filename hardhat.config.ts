@@ -16,7 +16,7 @@ if (process.env.HARDHAT_FORK) {
 
 const config: HardhatUserConfig = {
   solidity: {
-        compilers: [
+    compilers: [
       {
         version: '0.8.0',
         settings: {

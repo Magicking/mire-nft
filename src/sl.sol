@@ -3,8 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "./@rarible/royalties/contracts/impl/RoyaltiesV2Impl.sol";
 import "./@rarible/royalties/contracts/LibPart.sol";
@@ -22,7 +21,7 @@ interface IERC721MetadataTokenURI {
     function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
-contract MIRE is ERC721EnumerableUpgradeable, RoyaltiesV2Impl, AccessControlEnumerableUpgradeable {
+contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
     using NFTDescriptor for NFTDescriptor.ConstructTokenParams;
     using NFTDescriptor for NFTDescriptor.ConstructContractURIParams;
 
@@ -35,37 +34,46 @@ contract MIRE is ERC721EnumerableUpgradeable, RoyaltiesV2Impl, AccessControlEnum
     uint256 public version;
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function init() public initializer {
-        __ERC721_init("MIRE", unicode"M†RE");
-        __ERC721Enumerable_init_unchained();
-        __AccessControlEnumerable_init_unchained();
+    function init(string memory name, string memory symbol) public initializer {
+        __ERC721_init(name, symbol);
+        __AccessControl_init_unchained();
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         mTokenId = 0;
         version = 0;
     }
 
-    function mint(address to, address cloneContract, uint256 cloneId) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        cloneMappingValue[mTokenId] = 42 - mTokenId;
+    function mint(
+        address to,
+        address cloneContract,
+        uint256 cloneId
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        cloneMappingValue[mTokenId] = mTokenId;
 
         cloneMappingAddress[mTokenId] = IERC721MetadataTokenURI(cloneContract);
         cloneMappingId[mTokenId] = cloneId;
 
         _mint(to, mTokenId);
-        // if contractMetadata.royaltiesFeeBasisPoints > 0
-        // setRoyalties (mTokenId, params.royaltiesRecipient, uint96(params.royaltiesFeeBasisPoints))
+        if (contractMetadata.royaltiesFeeBasisPoints > 0) {
+            setRoyalties(
+                mTokenId,
+                contractMetadata.royaltiesRecipient,
+                uint96(contractMetadata.royaltiesFeeBasisPoints)
+            );
+        }
         mTokenId++;
         //require valid tokenURI (so far length > 0)
     }
 
-    function updateClone(uint256 tokenId, address _cloneContract, uint256 cloneId) public {
-        // reward for cleaning up space
-        require(ownerOf(tokenId) == _msgSender() || hasRole(DEFAULT_ADMIN_ROLE, _msgSender()));
-
-        uint256 decayCount = cloneMappingValue[tokenId];
-        require(decayCount > 1);
-
-        cloneMappingValue[tokenId] = decayCount - 1;
+    function updateClone(
+        uint256 tokenId,
+        address _cloneContract,
+        uint256 cloneId
+    ) public {
+        // Reward for cleaning up space
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender())
+        );
 
         IERC721MetadataTokenURI cloneContract = IERC721MetadataTokenURI(_cloneContract);
         cloneMappingAddress[tokenId] = cloneContract;
@@ -76,24 +84,8 @@ contract MIRE is ERC721EnumerableUpgradeable, RoyaltiesV2Impl, AccessControlEnum
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
-    // CUSTOM RH.v0
-        //ret = call NFT.tokenURI(_metadatas[tokenId].tokenIdNFT)
-        // extract URL to set internal URL
-        // set rendered imageURL
-        // set rendered externalURL
-        // set rendered contract description if different than hash(contractMetadata.current)
-        // set rendered tokenId
-    // END CUSTOM RH.v0
         return cloneMappingAddress[tokenId].tokenURI(cloneMappingId[tokenId]);
     }
-
-    // CUSTOM RH.v1
-    //  function setNFTAddrAndID ID
-    //    // set Addr & tokenID
-    //    // value = value - 1
-    //    // set _metadatas[tokenId]._metadatas[tokenId].tokenIdHypbear = ID
-    // END CUSTOM RH.v1
-
 
     // Rarrible & OpenSea roylaties informations
     function setRoyalties(
@@ -111,7 +103,7 @@ contract MIRE is ERC721EnumerableUpgradeable, RoyaltiesV2Impl, AccessControlEnum
         address from,
         address to,
         uint256 tokenId
-    ) internal virtual override(ERC721EnumerableUpgradeable) {
+    ) internal virtual override(ERC721Upgradeable) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
@@ -119,17 +111,20 @@ contract MIRE is ERC721EnumerableUpgradeable, RoyaltiesV2Impl, AccessControlEnum
     function contractURI() public view returns (string memory) {
         return contractMetadata.constructContractURI(name());
     }
-    
+
     // Set contract information, royalties and such
-    function setContractURI(NFTDescriptor.ConstructContractURIParams memory params) public onlyRole(DEFAULT_ADMIN_ROLE) {
-      contractMetadata = params;
+    function setContractURI(NFTDescriptor.ConstructContractURIParams memory params)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        contractMetadata = params;
     }
 
     function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
-        override(ERC721EnumerableUpgradeable, AccessControlEnumerableUpgradeable)
+        override(ERC721Upgradeable, AccessControlUpgradeable)
         returns (bool)
     {
         if (interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {

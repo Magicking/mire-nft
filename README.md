@@ -6,7 +6,7 @@
 - [x] External NFT Metadata insertion
 - [x] Rarrible Royalties compatible
 - [x] OpenSea Royalties compatible
-- [ ] Updates
+- [x] Updates
 
 ## Known bugs
 

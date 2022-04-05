@@ -18,7 +18,7 @@ library NFTDescriptor {
         string imageURL;
         string description;
         string externalURL;
-        address royaltiesRecipient;
+        address payable royaltiesRecipient;
         uint256 royaltiesFeeBasisPoints; // Royalties fee in basis point
     }
 
@@ -37,7 +37,7 @@ library NFTDescriptor {
         string calldata imageURL,
         string calldata description,
         string calldata externalURL,
-        address _royaltiesRecipient,
+        address payable _royaltiesRecipient,
         uint256 _royaltiesFeeBasisPoints
     ) public pure returns (ConstructContractURIParams memory params) {
         params.imageURL = imageURL;
@@ -48,7 +48,11 @@ library NFTDescriptor {
         return params;
     }
 
-    function constructTokenURI(ConstructTokenParams memory params, string memory name) public pure returns (string memory) {
+    function constructTokenURI(ConstructTokenParams memory params, string memory name)
+        public
+        pure
+        returns (string memory)
+    {
         string memory _name = generateName(params.tokenId, name);
         string memory description = generateDescription(params.tokenId, name);
 
@@ -74,7 +78,11 @@ library NFTDescriptor {
             );
     }
 
-    function constructContractURI(ConstructContractURIParams memory params, string memory contractName) public pure returns (string memory) {
+    function constructContractURI(ConstructContractURIParams memory params, string memory contractName)
+        public
+        pure
+        returns (string memory)
+    {
         uint256 sfbp = params.royaltiesFeeBasisPoints;
         address feeRecipient = params.royaltiesRecipient;
 
@@ -105,12 +113,15 @@ library NFTDescriptor {
     }
 
     function generateExternalUrl(string memory externalURL) internal pure returns (string memory) {
-        if (bytes(externalURL).length > 0)
-            return string(abi.encodePacked('", "external_url": "', externalURL));
+        if (bytes(externalURL).length > 0) return string(abi.encodePacked('", "external_url": "', externalURL));
         return "";
     }
 
-    function generateImagesLink(string memory imageURL, string memory animationURL) internal pure returns (string memory) {
+    function generateImagesLink(string memory imageURL, string memory animationURL)
+        internal
+        pure
+        returns (string memory)
+    {
         // if animation URL is not set
         if (bytes(animationURL).length > 0)
             return string(abi.encodePacked(imageURL, '", "animation_url": "', animationURL));
