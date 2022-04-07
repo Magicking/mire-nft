@@ -21,7 +21,7 @@ async function main() {
     let tx = await MIREContract.setContractURI({
       imageURL: 'https://6120.eu/img/skylight.png',
       externalURL: 'https://sky-light-sl.com',
-      description: 'S.ky L.ight ',
+      description: 'S.ky L.ight',
       royaltiesRecipient: deployer,
       royaltiesFeeBasisPoints: 1000,
     });
