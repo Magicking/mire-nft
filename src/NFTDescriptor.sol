@@ -87,20 +87,21 @@ library NFTDescriptor {
         address feeRecipient = params.royaltiesRecipient;
 
         return
-            string(abi.encodePacked(
-                                '{"name":"',
-                                contractName,
-                                '", "description":"',
-                                params.description,
-                                generateExternalUrl(params.externalURL),
-                                '", "image":"',
-                                generateImagesLink(params.imageURL, ""),
-                                '", "seller_fee_basis_points":"',
-                                sfbp.toString(),
-                                '", "fee_recipient":"',
-                                addressToString(feeRecipient),
-                                '"}'
-                            )
+            string(
+                abi.encodePacked(
+                    '{"name":"',
+                    contractName,
+                    '", "description":"',
+                    params.description,
+                    generateExternalUrl(params.externalURL),
+                    '", "image":"',
+                    generateImagesLink(params.imageURL, ""),
+                    '", "seller_fee_basis_points":"',
+                    sfbp.toString(),
+                    '", "fee_recipient":"',
+                    addressToString(feeRecipient),
+                    '"}'
+                )
             );
     }
 

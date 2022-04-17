@@ -23,10 +23,10 @@ async function main() {
 
     //const cloneAddress = '0x22a13cbb476f66cf97fda78f15879613854f04b0'; // id: 6 // polygon
     const cloneAddress = WAITContract.address; // id: 0rinkeby
-    console.log("Cloning ", cloneAddress);
+    console.log('Cloning ', cloneAddress);
     const cloneId = 42;
     log('Mint new token');
-    let tx = await MIREContract.mint(deployer, cloneAddress, cloneId);
+    const tx = await MIREContract.mint(deployer, cloneAddress, cloneId);
     await tx.wait();
     const balance = await MIREContract.balanceOf(deployer);
     console.log(await MIREContract.tokenURI(balance.sub(1)));

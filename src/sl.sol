@@ -47,6 +47,24 @@ contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
         _symbol = symbol;
     }
 
+    function migrate(address showerlovers) public {
+        require(version == 0);
+        version = 1;
+        // update minted clones
+        cloneMappingAddress[0] = cloneMappingAddress[2] = cloneMappingAddress[3] = cloneMappingAddress[4] = cloneMappingAddress[7] = IERC721MetadataTokenURI(showerlovers);
+        cloneMappingId[0] = 2; // 0xd35b6046dbb75668caf1a69b139c32dce81c2b63
+        cloneMappingId[2] = 10; // 0x547b4bf7f39fae562d2d0d5cfc329b05ec3694f2
+        cloneMappingId[3] = 0; // 0x1abae2b8026264e58e28302b1295153cc5166f6d
+        cloneMappingId[4] = 5; // 0x8772575854f296a0bb9ae95b0fe01473b13b43a3
+        cloneMappingId[7] = 1; // 0x55c23ff0d59d062c279b4cb715efbfd2fb4b3139
+        // mint new clones
+        mint(0x38F1DfdcaF2F0d70c29D4AF6a4AA9E920efe8B18, showerlovers, 3);
+        mint(0x5AB731b442d168a53f5F82696Ebe99A990FBE1CF, showerlovers, 11);
+        mint(0x4FAFa51539460F378FF9C2bce4EAf7C628824813, showerlovers, 12);
+        mint(0x0DC2DA31bA19A1213c4F839a0cd3637d80642817, showerlovers, 8);
+        mint(0x99a7CF01Fd9aD58f224C9675f3A9e45F294231d9, showerlovers, 7);
+    }
+
     function name() public view override returns (string memory) {
         return _name;
     }
@@ -59,10 +77,10 @@ contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
         address[] memory to,
         address cloneContract,
         uint256 cloneId
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-      for (uint i = 0; i < to.length; i++) {
-        mint(to[i], cloneContract, cloneId);
-      }
+    ) public {
+        for (uint256 i = 0; i < to.length; i++) {
+            mint(to[i], cloneContract, cloneId);
+        }
     }
 
     function mint(
@@ -92,10 +110,7 @@ contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
         address _cloneContract,
         uint256 cloneId
     ) public {
-        // Reward for cleaning up space
-        require(
-            hasRole(DEFAULT_ADMIN_ROLE, _msgSender())
-        );
+        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()));
 
         IERC721MetadataTokenURI cloneContract = IERC721MetadataTokenURI(_cloneContract);
         cloneMappingAddress[tokenId] = cloneContract;
@@ -103,6 +118,18 @@ contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
 
         bytes memory tokenURIData = bytes(cloneMappingAddress[tokenId].tokenURI(cloneId));
         require(tokenURIData.length > 0); // check for actual validity of the content
+    }
+
+    function batchUpdateClone(
+        uint256[] calldata tokenId,
+        address[] calldata cloneContract,
+        uint256[] calldata cloneId
+    ) public {
+        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()));
+        for (uint256 i = 0; i < tokenId.length; i++) {
+            cloneMappingAddress[tokenId[i]] = IERC721MetadataTokenURI(cloneContract[i]);
+            cloneMappingId[tokenId[i]] = cloneId[i];
+        }
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
@@ -143,15 +170,12 @@ contract MIRE is ERC721Upgradeable, RoyaltiesV2Impl, AccessControlUpgradeable {
     }
 
     // Set contract information, royalties and such
-    function setContractsInfo(string memory name, string memory symbol)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setContractsInfo(string memory name, string memory symbol) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (bytes(name).length > 0) {
-          _name = name;
+            _name = name;
         }
         if (bytes(symbol).length > 0) {
-          _symbol = symbol;
+            _symbol = symbol;
         }
     }
 

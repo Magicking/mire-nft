@@ -8,6 +8,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const {deployer, governance} = await getNamedAccounts();
 
   const NFTDescriptorLib = await ethers.getContract('NFTDescriptor', deployer);
+  const EXP = await ethers.getContract('EXP', deployer);
 
   await catchUnknownSigner(
     deploy('SLINE', {
@@ -23,7 +24,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
           init: {
             methodName: 'init',
             args: ['S-LINE', 'S†ine'],
-          }
+          },
+          onUpgrade: {
+            methodName: 'init',
+            args: [EXP.address],
+          },
         },
       },
     }),

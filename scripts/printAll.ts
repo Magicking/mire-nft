@@ -3,7 +3,7 @@ import {parseEther, formatEther} from '@ethersproject/units';
 import debugModule from 'debug';
 import {keccak256} from '@ethersproject/keccak256';
 import {defaultAbiCoder} from '@ethersproject/abi';
-import {MIRE, NFTDescriptor} from '../typechain';
+import {WAIT, MIRE, NFTDescriptor} from '../typechain';
 
 function waitFor<T>(p: Promise<{wait: () => Promise<T>}>): Promise<T> {
   return p.then((tx) => tx.wait());
@@ -16,17 +16,10 @@ async function main() {
     const {deployer} = await getNamedAccounts();
 
     const MIREContract = <MIRE>await ethers.getContract('SLINE', deployer);
-
-    log('Set Metadata');
-    const tx = await MIREContract.setContractURI({
-      imageURL: 'https://6120.eu/img/skylight.png',
-      externalURL: 'https://sky-light-sl.com',
-      description: 'S.ky L.ight',
-      royaltiesRecipient: deployer,
-      royaltiesFeeBasisPoints: 1000,
-    });
-    await tx.wait();
-    console.log(await MIREContract.contractURI());
+    const WAITContract = <WAIT>await ethers.getContract('WAIT', deployer);
+    for (let i = 0; i < 10; i++) {
+      console.log(await MIREContract.tokenURI(i));
+    }
   } catch (e) {
     console.log(e);
   }
