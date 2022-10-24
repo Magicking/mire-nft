@@ -1,61 +1,36 @@
-// SPDX-License-Identifier: AGPL-3.0
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
 
-library NFTDescriptor {
+contract NFTDescriptor {
     using Strings for uint256;
 
-    struct ConstructTokenParams {
+    struct ConstructTokenURIParams {
         uint256 tokenId;
+        string name;
+        string description;
         string imageURL;
         string animationURL;
         string externalURL;
     }
 
-    struct ConstructContractURIParams {
-        string imageURL;
-        string description;
-        string externalURL;
-        address payable royaltiesRecipient;
-        uint256 royaltiesFeeBasisPoints; // Royalties fee in basis point
-    }
-
     function TokenURIParamsCtor(
+        string calldata name,
+        string calldata description,
         string calldata imageURL,
         string calldata animationURL,
         string calldata externalURL
-    ) public pure returns (ConstructTokenParams memory params) {
+    ) public pure returns (ConstructTokenURIParams memory params) {
+        params.name = name;
+        params.description = description;
         params.imageURL = imageURL;
         params.animationURL = animationURL;
         params.externalURL = externalURL;
-        return params;
     }
 
-    function ConstructContractURIParamsCtor(
-        string calldata imageURL,
-        string calldata description,
-        string calldata externalURL,
-        address payable _royaltiesRecipient,
-        uint256 _royaltiesFeeBasisPoints
-    ) public pure returns (ConstructContractURIParams memory params) {
-        params.imageURL = imageURL;
-        params.description = description;
-        params.externalURL = externalURL;
-        params.royaltiesRecipient = _royaltiesRecipient;
-        params.royaltiesFeeBasisPoints = _royaltiesFeeBasisPoints; // Royalties fee in basis point
-        return params;
-    }
-
-    function constructTokenURI(ConstructTokenParams memory params, string memory name)
-        public
-        pure
-        returns (string memory)
-    {
-        string memory _name = generateName(params.tokenId, name);
-        string memory description = generateDescription(params.tokenId, name);
-
+    function constructTokenURI(ConstructTokenURIParams memory params) public pure returns (string memory) {
         return
             string(
                 abi.encodePacked(
@@ -63,14 +38,13 @@ library NFTDescriptor {
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
-                                '{"name":"',
-                                _name,
-                                '", "description":"',
-                                description,
-                                generateExternalUrl(params.externalURL),
-                                '", "image":"',
-                                generateImagesLink(params.imageURL, params.animationURL),
-                                '"}'
+                                "{",
+                                generateName(params, false),
+                                generateDescription(params, false),
+                                generateExternalUrl(params, false),
+                                generateImageLink(params, false),
+                                generateAnimationLink(params, true),
+                                "}"
                             )
                         )
                     )
@@ -78,78 +52,79 @@ library NFTDescriptor {
             );
     }
 
-    function constructContractURI(ConstructContractURIParams memory params, string memory contractName)
-        public
-        pure
-        returns (string memory)
-    {
-        uint256 sfbp = params.royaltiesFeeBasisPoints;
-        address feeRecipient = params.royaltiesRecipient;
-
-        return
-            string(
-                abi.encodePacked(
-                    '{"name":"',
-                    contractName,
-                    '", "description":"',
-                    params.description,
-                    generateExternalUrl(params.externalURL),
-                    '", "image":"',
-                    generateImagesLink(params.imageURL, ""),
-                    '", "seller_fee_basis_points":"',
-                    sfbp.toString(),
-                    '", "fee_recipient":"',
-                    addressToString(feeRecipient),
-                    '"}'
-                )
-            );
+    function getEof(bool end) internal pure returns (string memory eof) {
+        if (!end) eof = ",";
     }
 
-    function generateExternalUrl(string memory externalURL) internal pure returns (string memory) {
-        if (bytes(externalURL).length > 0) return string(abi.encodePacked('", "external_url": "', externalURL));
-        return "";
+    function generateDescription(ConstructTokenURIParams memory params, bool end) private pure returns (string memory) {
+        string memory eof = getEof(end);
+        return string(abi.encodePacked('"description": "', escapeChars('\n"\\', params.description), '"', eof));
     }
 
-    function generateImagesLink(string memory imageURL, string memory animationURL)
+    function generateName(ConstructTokenURIParams memory params, bool end) private pure returns (string memory) {
+        string memory eof = getEof(end);
+        return string(abi.encodePacked('"name": "', params.name, '"', eof));
+    }
+
+    function generateExternalUrl(ConstructTokenURIParams memory params, bool end)
         internal
         pure
         returns (string memory)
     {
-        // if animation URL is not set
-        if (bytes(animationURL).length > 0)
-            return string(abi.encodePacked(imageURL, '", "animation_url": "', animationURL));
-        // return only the imageURL
-        return imageURL;
+        string memory eof = getEof(end);
+
+        if (bytes(params.externalURL).length > 0)
+            return string(abi.encodePacked('"external_url": "', params.externalURL, '"', eof));
+        return "";
     }
 
-    function escapeQuotes(string memory symbol) internal pure returns (string memory) {
+    function generateImageLink(ConstructTokenURIParams memory params, bool end) internal pure returns (string memory) {
+        string memory eof = getEof(end);
+
+        if (bytes(params.imageURL).length > 0) return string(abi.encodePacked('"image": "', params.imageURL, '"', eof));
+        return "";
+    }
+
+    function generateAnimationLink(ConstructTokenURIParams memory params, bool end)
+        internal
+        pure
+        returns (string memory)
+    {
+        string memory eof = getEof(end);
+
+        if (bytes(params.animationURL).length > 0)
+            return string(abi.encodePacked('"animation_url": "', params.animationURL, '"', eof));
+        return "";
+    }
+
+    function escapeChars(string memory chars, string memory symbol) internal pure returns (string memory) {
         bytes memory symbolBytes = bytes(symbol);
+        bytes memory charsBytes = bytes(chars);
         uint8 quotesCount = 0;
         for (uint8 i = 0; i < symbolBytes.length; i++) {
-            if (symbolBytes[i] == '"') {
-                quotesCount++;
+            for (uint8 j = 0; j < charsBytes.length; j++) {
+                if (symbolBytes[i] == charsBytes[j]) {
+                    quotesCount++;
+                    continue;
+                }
             }
         }
         if (quotesCount > 0) {
             bytes memory escapedBytes = new bytes(symbolBytes.length + (quotesCount));
             uint256 index;
             for (uint8 i = 0; i < symbolBytes.length; i++) {
-                if (symbolBytes[i] == '"') {
-                    escapedBytes[index++] = "\\";
+                for (uint8 j = 0; j < charsBytes.length; j++) {
+                    if (symbolBytes[i] == charsBytes[j]) {
+                        escapedBytes[index++] = "\\";
+                        break;
+                    }
                 }
+                if (symbolBytes[i] == "\n") symbolBytes[i] = "n";
                 escapedBytes[index++] = symbolBytes[i];
             }
             return string(escapedBytes);
         }
         return symbol;
-    }
-
-    function generateDescription(uint256 tokenId, string memory contractName) private pure returns (string memory) {
-        return string(abi.encodePacked(contractName, " - ", tokenId.toString(), unicode"º")); // TODO make it binary with ª
-    }
-
-    function generateName(uint256 tokenId, string memory contractName) private pure returns (string memory) {
-        return string(abi.encodePacked(contractName, " - ", tokenId.toString()));
     }
 
     function addressToString(address addr) internal pure returns (string memory) {
