@@ -5,16 +5,15 @@ import {
   getUnnamedAccounts,
   getNamedAccounts,
 } from 'hardhat';
-import {MIRE, ShowerLovers, NFTDescriptor} from '../typechain';
+import {SkyLight, NFTDescriptor} from '../typechain';
 import {setupUser, setupUsers} from './utils';
 
 const setup = deployments.createFixture(async () => {
   await deployments.fixture('MIRE');
   const {deployer} = await getNamedAccounts();
   const contracts = {
-    SL: <MIRE>await ethers.getContract('SLINE'),
+    SL: <SkyLight>await ethers.getContract('SLNYB'),
     NFTDescriptor: <NFTDescriptor>await ethers.getContract('NFTDescriptor'),
-    EXP: <ShowerLovers>await ethers.getContract('EXP'),
   };
   const users = await setupUsers(await getUnnamedAccounts(), contracts);
   return {
@@ -23,14 +22,28 @@ const setup = deployments.createFixture(async () => {
     deployer: await setupUser(deployer, contracts),
   };
 });
-
 describe('SLNFT', function () {
   it('mint a composition', async function () {
     const {contracts, users, deployer} = await setup();
 
-    const cloneAddress = '0x42ae11ac8c6caf0c2ad29af90c759314d2f55553'; // polygon & rinkeby
-    const cloneId = 0;
-    await expect(contracts.SL.mint(deployer.address, cloneAddress, cloneId))
+    const TokenURIParams = await contracts.NFTDescriptor.constructTokenURI({
+      tokenId: 0,
+      name: 'NAME',
+      description: 'DESCRIPTION',
+      imageURL: 'https://6120.eu/img/skylight.png',
+      animationURL: '',
+      externalURL: 'https://sky-light-sl.com',
+    });
+    await expect(
+      contracts.SL.mint(deployer.address, {
+        tokenId: 0,
+        name: 'NAME',
+        description: 'DESCRIPTION',
+        imageURL: 'https://6120.eu/img/skylight.png',
+        animationURL: '',
+        externalURL: 'https://sky-light-sl.com',
+      })
+    )
       .to.emit(contracts.SL, 'Transfer')
       .withArgs(
         '0x0000000000000000000000000000000000000000',
@@ -40,6 +53,7 @@ describe('SLNFT', function () {
   });
 });
 
+/*
 describe('EXP', function () {
   it('get SL tokenURI', async function () {
     const {contracts, users, deployer} = await setup();
@@ -48,3 +62,4 @@ describe('EXP', function () {
     await expect(await contracts.EXP.metadata(0)).to.equal('Transfer');
   });
 });
+*/

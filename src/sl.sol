@@ -92,7 +92,7 @@ contract SkyLight is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, Access
         return super.supportsInterface(interfaceId);
     }
 
-    function SL() public returns (string memory) {
+    function SL() public pure returns (string memory) {
         return unicode"S†L";
     }
 }

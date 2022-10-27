@@ -7,9 +7,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const {deployer, governance} = await getNamedAccounts();
 
+  const NFTDescriptorLib = await ethers.getContract('NFTDescriptor', deployer);
+
   await catchUnknownSigner(
-    deploy('EXP', {
-      contract: 'ShowerLovers',
+    deploy('SLNYB', {
+      contract: 'SkyLight',
+      args: ['SL NYB', 'SLNYB', NFTDescriptorLib.address, deployer],
       from: deployer,
       log: true,
     }),
