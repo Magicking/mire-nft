@@ -13,9 +13,12 @@ typechain/
 node_modules/
 .env
 
+tmp/
+
 .yalc
 yalc.lock
 
 contractsInfo.json
 deployments/hardhat
+deployments/rinkeby
 deployments/localhost
