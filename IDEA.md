@@ -15,12 +15,8 @@ Menu of today:
     IN CONSTRUCTOR
 - Drink Champagne
   --->8---------->8--->8---------->8--->8---------->8---
-- Link/mint assets in batch
-  - Upgrade MIRE-NFT to latest Soldity compiler version
-  - MintBatch function or in constructor
-  - Test
+- Upgrade MIRE-NFT to latest Soldity compiler version
+- MintBatch function / constructor to link assets
+- Test
 - Deploy everything
-  - Send recordings
-- Drink Champagne
   --->8---------->8--->8---------->8--->8---------->8---
-- Drink Champagne
