@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0
 // https://github.com/Magicking/S.ky-L.ight-NFT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -56,6 +56,17 @@ contract SkyLight is Context, ERC721Enumerable, Ownable, RoyaltiesV2Impl, Access
         mTokenId++;
     }
 
+    /*
+    // Input: Array of items names and ConstructTokenURIParams
+    // Output: NFT ITEM minted corresponding to each F1
+    function mintBatchSpeedLine(address[] to, NFTDescriptor.ConstructTokenURIParams[] calldata params) public {
+    }
+
+    // Input: number from 0 to 43 and ConstructTokenURIParams
+    // Output: NFT ITEM minted corresponding to {00..43}.png
+    function mintBatchSLNYB(address[] to, NFTDescriptor.ConstructTokenURIParams[] calldata params) public {
+    }
+*/
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         return mRender.constructTokenURI(_metadatas[tokenId]);
     }

@@ -10,21 +10,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const NFTDescriptorLib = await ethers.getContract('NFTDescriptor', deployer);
 
   await catchUnknownSigner(
-    deploy('SLNYB', {
+    deploy('SLSL', {
       contract: 'SkyLight',
-      args: [
-        'SkyLight New York Blonde',
-        'SLNYB',
-        NFTDescriptorLib.address,
-        deployer,
-      ],
+      args: ['S.peed L.ine', 'SLSL', NFTDescriptorLib.address, deployer],
       from: deployer,
       log: true,
     }),
     {log: true}
   );
-  const SLNYB = await ethers.getContract('SLNYB', deployer);
-  console.log('SLNYB address: ' + SLNYB.address);
-  // Set 00..43 items metadatas
+  const SLSL = await ethers.getContract('SLSL', deployer);
+  console.log('SLSL address: ' + SLSL.address);
 };
 export default func;
