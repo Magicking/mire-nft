@@ -42,7 +42,7 @@ contract NFTDescriptor {
                                 generateName(params, false),
                                 generateDescription(params, false),
                                 generateExternalUrl(params, false),
-                                generateImageLink(params, false),
+                                generateImageLink(params, bytes(params.animationURL).length == 0),
                                 generateAnimationLink(params, true),
                                 "}"
                             )
