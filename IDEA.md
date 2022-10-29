@@ -2,8 +2,6 @@ Live coding with
 @sky_light_sl
 -> https://twitch.tv/magicking6120
 
-Menu of today:
-
 - Fetch assets
   - Already downloaded
 - Verify assets normalization
@@ -16,7 +14,33 @@ Menu of today:
 - Drink Champagne
   --->8---------->8--->8---------->8--->8---------->8---
 - Upgrade MIRE-NFT to latest Soldity compiler version
+  - Upgrade hardhat to latest version
+  - Upgrade solidity to latest version
+    --->8---------->8--->8---------->8--->8---------->8---
 - MintBatch function / constructor to link assets
 - Test
 - Deploy everything
   --->8---------->8--->8---------->8--->8---------->8---
+
+Notes:
+
+NFT:
+
+- SLNYB
+- NAME: SLNYB
+- SYMBOL: SLNYB
+- DESCRIPTION: Sky Light New York Blonde
+- S.peed L.ine
+- NAME: S.peed L.ine
+- SYMBOL: SLSL
+- DESCRIPTION: < / S.ky L.ight \ > vision < / S.peed L.ine \ > collection < / S.uper L.ighters \ > creation Monaco, May 2022 Formula 1 Grand Prix Series of seven unique art pieces
+
+Solidity updates:
+0.8.5
+
+- verbatim - Solidity word language
+- bytes32(bytes1(bytes32(0x4243...))) -> 0x4200...
+  0.8.4
+- new error mgmt -> no more `revert("string")`, now it's `revert(Error("string"))` with `Error` being a function declared `error Error(string message)` in the compilation unit
+
+TODO: CHECK INVARIANTS IN THE CONTRACT (e.g. `require`)
