@@ -13,10 +13,5 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     from: deployer,
     log: true,
   });
-  console.log('Deploying WAITContract');
-  await deploy('WAIT', {
-    from: deployer,
-    log: true,
-  });
 };
 export default func;

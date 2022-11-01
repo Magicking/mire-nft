@@ -13,6 +13,7 @@ const setup = deployments.createFixture(async () => {
   const {deployer} = await getNamedAccounts();
   const contracts = {
     SL: <SkyLight>await ethers.getContract('SLNYB'),
+    SLSL: <SkyLight>await ethers.getContract('SLSL'),
     NFTDescriptor: <NFTDescriptor>await ethers.getContract('NFTDescriptor'),
   };
   const users = await setupUsers(await getUnnamedAccounts(), contracts);
@@ -28,22 +29,22 @@ describe('SLNFT', function () {
 
     const TokenURIParams = {
       tokenId: 0,
-      name: 'SLNYB',
-      description: 'SLNYB DESCRIPTION',
-      imageURL: 'ipfs://QmYJhD8Uoj7CuBac9hKoWsKdVfBw1CtQP4ucS2P25kuvzm/00.png',
+      name: 'S.peed L.ine',
+      description:
+        '< / S.ky L.ight  > vision < / S.peed L.ine  > collection < / S.uper L.ighters  > creation Monaco, May 2022 Formula 1 Grand Prix Series of seven unique art pieces',
+      imageURL:
+        'ipfs://Qmc9D8hC8LZbk8XxaZiJK1K9xje8pPuSuU3PZqFriGNGE8/F1SL.glb',
       animationURL: '',
       externalURL: 'https://sky-light-sl.com',
     };
-    await expect(contracts.SL.mint(deployer.address, TokenURIParams))
-      .to.emit(contracts.SL, 'Transfer')
-      .withArgs(
-        '0x0000000000000000000000000000000000000000',
-        deployer.address,
-        0
-      );
-    console.log(
-      await contracts.NFTDescriptor.constructTokenURI(TokenURIParams)
-    );
+    let token = await contracts.SL.tokenURI(1);
+    console.log(token);
+    token = await contracts.SL.tokenURI(3);
+    console.log(token);
+    token = await contracts.SLSL.tokenURI(1);
+    console.log(token);
+    token = await contracts.SLSL.tokenURI(1212);
+    console.log(token);
   });
 });
 

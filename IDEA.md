@@ -18,6 +18,7 @@ Live coding with
   - Upgrade solidity to latest version
     --->8---------->8--->8---------->8--->8---------->8---
 - MintBatch function / constructor to link assets
+- TODO: - CHECK INVARIANTS IN THE CONTRACT (e.g. `require`) - Add specific logic to mint the SpeedLine NFT using the same params but different name (see file name) - Add specific logic to mint the SLNYB NFT using the same params but different logic since it's a single asset(movie) with all the frames in different item number from 00 to 43
 - Test
 - Deploy everything
   --->8---------->8--->8---------->8--->8---------->8---
